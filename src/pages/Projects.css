@@ -1,0 +1,117 @@
+.projects-container {
+  max-width: 1100px;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.project-card {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+  cursor: default;
+}
+
+.project-card:hover {
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.18);
+  border-color: var(--accent-cyan);
+}
+
+.project-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.project-date {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: 'Inter', sans-serif;
+}
+
+.project-award {
+  font-size: 12px;
+  color: #f59e0b;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.project-title {
+  font-size: 17px;
+  color: #fff;
+  line-height: 1.4;
+  font-family: 'DM Serif Display', serif;
+  font-weight: normal;
+}
+
+.project-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.project-note {
+  font-size: 13px;
+  color: var(--accent-purple);
+  font-style: italic;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.small-pill {
+  padding: 4px 10px !important;
+  font-size: 11px !important;
+}
+
+.project-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.proj-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.btn-github {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+}
+
+.btn-demo {
+  background: rgba(0, 229, 255, 0.1);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  color: var(--accent-cyan);
+}
+
+.proj-btn:hover { opacity: 0.8; }
+
+@media (max-width: 900px) {
+  .projects-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .projects-grid { grid-template-columns: 1fr; }
+}

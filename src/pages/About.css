@@ -1,0 +1,349 @@
+/* page-container is defined globally in index.css */
+
+.about-page {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  max-width: 1000px;
+}
+
+/* ── SECTION 1: BIO ── */
+.about-bio-card {
+  display: flex;
+  gap: 48px;
+  padding: 48px;
+  border-radius: 24px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  align-items: flex-start;
+}
+
+/* LEFT: Photo */
+.about-photo-col {
+  flex: 0 0 280px;
+}
+
+.about-photo-wrapper {
+  position: relative;
+  width: 280px;
+  height: 340px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.about-brush {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-10deg);
+  width: 420px;
+  height: 340px;
+  z-index: 0;
+}
+
+.about-photo {
+  width: 240px;
+  height: 300px;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.15);
+  position: relative;
+  z-index: 1;
+}
+
+/* RIGHT: Info */
+.about-info-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.about-eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #00e5ff;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.about-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 40px;
+  color: #ffffff;
+  font-weight: normal;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.about-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #a78bfa;
+}
+
+.about-bio {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+.about-contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.about-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.about-contact-item svg {
+  color: #00e5ff;
+  flex-shrink: 0;
+}
+
+.about-socials {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.social-outline-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  color: #00e5ff;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.social-outline-btn:hover {
+  background: rgba(0, 229, 255, 0.08);
+  border-color: #00e5ff;
+}
+
+/* ── SHARED SECTION WRAPPER ── */
+.about-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.about-section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 32px;
+  color: #ffffff;
+  font-weight: normal;
+}
+
+/* ── SECTION 2: SKILLS ── */
+.skills-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.skill-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.skill-card-icon {
+  font-size: 24px;
+}
+
+.skill-card-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.skill-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.about-pill {
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* ── SECTION 3: EDUCATION ── */
+.edu-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.edu-entry {
+  display: flex;
+  gap: 20px;
+}
+
+.edu-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 6px;
+  flex-shrink: 0;
+}
+
+.edu-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.edu-line {
+  width: 2px;
+  flex: 1;
+  min-height: 40px;
+  margin-top: 8px;
+}
+
+.edu-card {
+  flex: 1;
+  padding: 24px 28px;
+  margin-bottom: 28px;
+}
+
+.edu-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.edu-icon {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.edu-institution {
+  font-family: 'DM Serif Display', serif;
+  font-size: 18px;
+  color: #ffffff;
+  font-weight: normal;
+  margin: 0;
+}
+
+.edu-degree {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 4px;
+}
+
+.edu-duration {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.edu-extra {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.edu-bullets {
+  margin-top: 14px;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.edu-bullets li {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ── SECTION 4: LANGUAGES ── */
+.lang-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.lang-card {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.lang-flag {
+  font-size: 24px;
+}
+
+.lang-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.lang-level {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Shared eyebrow */
+.section-eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* Responsive */
+@media (max-width: 860px) {
+  .about-bio-card {
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 24px;
+  }
+  .about-photo-col { flex: 0 0 auto; }
+  .skills-grid { grid-template-columns: 1fr; }
+  .lang-row { grid-template-columns: 1fr; }
+}

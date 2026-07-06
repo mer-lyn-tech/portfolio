@@ -1,0 +1,129 @@
+.navbar {
+  position: sticky;
+  top: 40px; /* Below LoginBar */
+  left: 0;
+  width: 100%;
+  background: rgba(8, 8, 20, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 40;
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.navbar-brand {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-text {
+  font-family: 'DM Serif Display', serif;
+  font-size: 24px;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.logo-subtext {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: var(--accent-cyan);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cyan-dot {
+  font-size: 8px;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.nav-links {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1.5px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--accent-cyan);
+}
+
+.nav-link.active {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+}
+
+/* Mobile styles */
+.mobile-only {
+  display: none;
+}
+
+.mobile-menu-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(8, 8, 20, 0.95);
+  backdrop-filter: blur(20px);
+  z-index: 45; /* Above nav but below login bar */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.mobile-menu-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobile-links {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+}
+
+.mobile-link {
+  font-size: 24px;
+  padding: 12px 32px;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+  .mobile-only {
+    display: block;
+  }
+}
