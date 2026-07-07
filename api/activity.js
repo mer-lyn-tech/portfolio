@@ -13,22 +13,37 @@
 
 import { kv } from '@vercel/kv'
 
+// Stateless in-memory fallback (reused within the same serverless instance)
+const memStore = {}
+
+function useKV() {
+  return !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+}
+
 export default async function handler(req, res) {
-  
+  const hasKV = useKV();
+
   // GET — fetch all activities
   if (req.method === 'GET') {
     try {
-      const keys = await kv.keys('activity:*')
-      if (!keys || keys.length === 0) {
-        return res.status(200).json([])
+      if (hasKV) {
+        const keys = await kv.keys('activity:*')
+        if (!keys || keys.length === 0) {
+          return res.status(200).json([])
+        }
+        const activities = await Promise.all(
+          keys.map(key => kv.get(key))
+        )
+        const sorted = activities
+          .filter(Boolean)
+          .sort((a, b) => new Date(a.date) - new Date(b.date))
+        return res.status(200).json(sorted)
+      } else {
+        // Fallback for missing database link
+        const sorted = Object.values(memStore)
+          .sort((a, b) => new Date(a.date) - new Date(b.date))
+        return res.status(200).json(sorted)
       }
-      const activities = await Promise.all(
-        keys.map(key => kv.get(key))
-      )
-      const sorted = activities
-        .filter(Boolean)
-        .sort((a, b) => new Date(a.date) - new Date(b.date))
-      return res.status(200).json(sorted)
     } catch (error) {
       console.error('GET error:', error)
       return res.status(500).json({ error: 'Failed to fetch activities' })
@@ -43,7 +58,12 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Date is required' })
       }
       const entry = { date, title, activity, status }
-      await kv.set(`activity:${date}`, JSON.stringify(entry))
+      if (hasKV) {
+        // Save object directly — @vercel/kv handles JSON serialization
+        await kv.set(`activity:${date}`, entry)
+      } else {
+        memStore[date] = entry
+      }
       return res.status(200).json({ success: true, data: entry })
     } catch (error) {
       console.error('POST error:', error)
@@ -58,7 +78,11 @@ export default async function handler(req, res) {
       if (!date) {
         return res.status(400).json({ error: 'Date is required' })
       }
-      await kv.del(`activity:${date}`)
+      if (hasKV) {
+        await kv.del(`activity:${date}`)
+      } else {
+        delete memStore[date]
+      }
       return res.status(200).json({ success: true })
     } catch (error) {
       console.error('DELETE error:', error)
