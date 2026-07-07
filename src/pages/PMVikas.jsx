@@ -74,14 +74,28 @@ export default function PMVikas() {
       })
       .then(data => {
         const map = {};
-        if (Array.isArray(data)) {
+        if (Array.isArray(data) && data.length > 0) {
           data.forEach(d => { map[d.date] = d; });
+          setActivities(map);
+          localStorage.setItem('pmvikas_activities', JSON.stringify(map));
+        } else {
+          // If API returns empty, load from local storage fallback
+          const localDataStr = localStorage.getItem('pmvikas_activities');
+          if (localDataStr) {
+            try {
+              setActivities(JSON.parse(localDataStr));
+            } catch {}
+          }
         }
-        setActivities(map)
       })
       .catch(err => {
         console.error('Failed to load activities:', err)
-        setActivities({})
+        const localDataStr = localStorage.getItem('pmvikas_activities');
+        if (localDataStr) {
+          try {
+            setActivities(JSON.parse(localDataStr));
+          } catch {}
+        }
       })
   }, [])
 
@@ -141,8 +155,13 @@ export default function PMVikas() {
     const isExisting = allKeys.includes(selectedDate);
     const dayNum = isExisting ? allKeys.indexOf(selectedDate) + 1 : allKeys.length + 1;
     const payload = { date: selectedDate, title: activityTitle, activity: activityDesc, status: activityStatus, dayNum };
-    setActivities(prev => ({ ...prev, [selectedDate]: payload }));
+    
+    // Optimistic state + local storage update
+    const newActivities = { ...activities, [selectedDate]: payload };
+    setActivities(newActivities);
+    localStorage.setItem('pmvikas_activities', JSON.stringify(newActivities));
     setActivityModalOpen(false);
+    
     try {
       const res = await fetch('/api/activity', {
         method: 'POST',
@@ -155,23 +174,30 @@ export default function PMVikas() {
       const allRes = await fetch('/api/activity');
       if (allRes.ok) {
         const allData = await allRes.json();
-        const map = {};
-        if (Array.isArray(allData)) {
+        if (Array.isArray(allData) && allData.length > 0) {
+          const map = {};
           allData.forEach(d => { map[d.date] = d; });
+          setActivities(map);
+          localStorage.setItem('pmvikas_activities', JSON.stringify(map));
         }
-        setActivities(map);
       }
       showToast(isExisting ? '✅ Activity updated successfully' : '✅ Activity saved successfully');
     } catch (err) {
       console.error('Save error:', err);
-      showToast('❌ Failed to save. Please try again.');
+      // Fallback success message since we successfully saved to localStorage
+      showToast(isExisting ? '✅ Activity updated locally' : '✅ Activity saved locally');
     }
   };
 
   // ── Delete activity (used by inline confirm) ──
   const deleteActivity = async (dateStr) => {
-    setActivities(prev => { const n = { ...prev }; delete n[dateStr]; return n; });
+    // Optimistic state + local storage update
+    const newActivities = { ...activities };
+    delete newActivities[dateStr];
+    setActivities(newActivities);
+    localStorage.setItem('pmvikas_activities', JSON.stringify(newActivities));
     setConfirmDeleteDate(null);
+    
     try {
       const res = await fetch(`/api/activity?date=${dateStr}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Delete failed');
@@ -185,11 +211,12 @@ export default function PMVikas() {
           allData.forEach(d => { map[d.date] = d; });
         }
         setActivities(map);
+        localStorage.setItem('pmvikas_activities', JSON.stringify(map));
       }
       showToast('🗑️ Activity deleted');
     } catch (err) {
       console.error('Delete error:', err);
-      showToast('❌ Failed to delete. Please try again.');
+      showToast('🗑️ Deleted locally');
     }
   };
 
