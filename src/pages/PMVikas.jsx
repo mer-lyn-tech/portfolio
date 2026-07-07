@@ -66,19 +66,24 @@ export default function PMVikas() {
   // Per-card delete confirmation: stores the date of the card pending delete
   const [confirmDeleteDate, setConfirmDeleteDate] = useState(null);
 
-  const fetchActivities = useCallback(async () => {
-    try {
-      const res = await fetch('/api/activity');
-      if (res.ok) {
-        const data = await res.json();
+  useEffect(() => {
+    fetch('/api/activity')
+      .then(res => {
+        if (!res.ok) throw new Error('API error')
+        return res.json()
+      })
+      .then(data => {
         const map = {};
-        data.forEach(d => { map[d.date] = d; });
-        setActivities(map);
-      }
-    } catch {}
-  }, []);
-
-  useEffect(() => { fetchActivities(); }, [fetchActivities]);
+        if (Array.isArray(data)) {
+          data.forEach(d => { map[d.date] = d; });
+        }
+        setActivities(map)
+      })
+      .catch(err => {
+        console.error('Failed to load activities:', err)
+        setActivities({})
+      })
+  }, [])
 
   const showToast = (msg) => {
     setToast(msg);
@@ -139,13 +144,28 @@ export default function PMVikas() {
     setActivities(prev => ({ ...prev, [selectedDate]: payload }));
     setActivityModalOpen(false);
     try {
-      await fetch('/api/activity', {
+      const res = await fetch('/api/activity', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
+      if (!res.ok) throw new Error('Save failed');
+      
+      // Re-fetch all data after save
+      const allRes = await fetch('/api/activity');
+      if (allRes.ok) {
+        const allData = await allRes.json();
+        const map = {};
+        if (Array.isArray(allData)) {
+          allData.forEach(d => { map[d.date] = d; });
+        }
+        setActivities(map);
+      }
       showToast(isExisting ? '✅ Activity updated successfully' : '✅ Activity saved successfully');
-    } catch { showToast('✅ Saved locally'); }
+    } catch (err) {
+      console.error('Save error:', err);
+      showToast('❌ Failed to save. Please try again.');
+    }
   };
 
   // ── Delete activity (used by inline confirm) ──
@@ -153,9 +173,24 @@ export default function PMVikas() {
     setActivities(prev => { const n = { ...prev }; delete n[dateStr]; return n; });
     setConfirmDeleteDate(null);
     try {
-      await fetch(`/api/activity?date=${dateStr}`, { method: 'DELETE' });
+      const res = await fetch(`/api/activity?date=${dateStr}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Delete failed');
+      
+      // Re-fetch all data after delete
+      const allRes = await fetch('/api/activity');
+      if (allRes.ok) {
+        const allData = await allRes.json();
+        const map = {};
+        if (Array.isArray(allData)) {
+          allData.forEach(d => { map[d.date] = d; });
+        }
+        setActivities(map);
+      }
       showToast('🗑️ Activity deleted');
-    } catch { showToast('🗑️ Cleared locally'); }
+    } catch (err) {
+      console.error('Delete error:', err);
+      showToast('❌ Failed to delete. Please try again.');
+    }
   };
 
   // ── Calendar grid ──

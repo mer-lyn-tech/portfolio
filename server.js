@@ -39,9 +39,9 @@ app.get('/api/activity', async (req, res) => {
 // POST /api/activity — upsert activity
 app.post('/api/activity', async (req, res) => {
   try {
-    const { date, activity, status } = req.body;
+    const { date, title, activity, status } = req.body;
     if (!date) return res.status(400).json({ error: 'date required' });
-    const record = { date, activity, status };
+    const record = { date, title, activity, status };
     const kv = await getKV();
     if (kv) {
       await kv.set(`activity:${date}`, record);
