@@ -12,9 +12,11 @@ const memStore = {};
 
 async function getKV() {
   try {
-    if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
-      const { kv } = await import('@vercel/kv');
-      return kv;
+    const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+    const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+    if (url && token) {
+      const { createClient } = await import('@vercel/kv');
+      return createClient({ url, token });
     }
   } catch (e) {}
   return null;

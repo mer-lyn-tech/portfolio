@@ -11,13 +11,16 @@
  9. Your calendar data will now persist permanently
 */
 
-import { kv } from '@vercel/kv'
+import { createClient } from '@vercel/kv'
 
-// Stateless in-memory fallback (reused within the same serverless instance)
-const memStore = {}
+const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL
+const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN
+
+// Initialize KV client using available environment variables
+const kv = url && token ? createClient({ url, token }) : null
 
 function useKV() {
-  return !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+  return !!kv;
 }
 
 export default async function handler(req, res) {
@@ -39,10 +42,7 @@ export default async function handler(req, res) {
           .sort((a, b) => new Date(a.date) - new Date(b.date))
         return res.status(200).json(sorted)
       } else {
-        // Fallback for missing database link
-        const sorted = Object.values(memStore)
-          .sort((a, b) => new Date(a.date) - new Date(b.date))
-        return res.status(200).json(sorted)
+        return res.status(200).json([])
       }
     } catch (error) {
       console.error('GET error:', error)
@@ -61,10 +61,10 @@ export default async function handler(req, res) {
       if (hasKV) {
         await kv.set(`activity:${date}`, entry)
         await kv.sadd('activity:index', date)
+        return res.status(200).json({ success: true, data: entry })
       } else {
-        memStore[date] = entry
+        return res.status(500).json({ error: 'Database connection not configured' })
       }
-      return res.status(200).json({ success: true, data: entry })
     } catch (error) {
       console.error('POST error:', error)
       return res.status(500).json({ error: 'Failed to save activity' })
@@ -81,10 +81,10 @@ export default async function handler(req, res) {
       if (hasKV) {
         await kv.del(`activity:${date}`)
         await kv.srem('activity:index', date)
+        return res.status(200).json({ success: true })
       } else {
-        delete memStore[date]
+        return res.status(500).json({ error: 'Database connection not configured' })
       }
-      return res.status(200).json({ success: true })
     } catch (error) {
       console.error('DELETE error:', error)
       return res.status(500).json({ error: 'Failed to delete activity' })
