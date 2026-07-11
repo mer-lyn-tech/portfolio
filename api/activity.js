@@ -27,12 +27,12 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
       if (hasKV) {
-        const keys = await kv.keys('activity:*')
-        if (!keys || keys.length === 0) {
+        const dates = await kv.smembers('activity:index')
+        if (!dates || dates.length === 0) {
           return res.status(200).json([])
         }
         const activities = await Promise.all(
-          keys.map(key => kv.get(key))
+          dates.map(date => kv.get(`activity:${date}`))
         )
         const sorted = activities
           .filter(Boolean)
@@ -59,8 +59,8 @@ export default async function handler(req, res) {
       }
       const entry = { date, title, activity, status }
       if (hasKV) {
-        // Save object directly — @vercel/kv handles JSON serialization
         await kv.set(`activity:${date}`, entry)
+        await kv.sadd('activity:index', date)
       } else {
         memStore[date] = entry
       }
@@ -80,6 +80,7 @@ export default async function handler(req, res) {
       }
       if (hasKV) {
         await kv.del(`activity:${date}`)
+        await kv.srem('activity:index', date)
       } else {
         delete memStore[date]
       }

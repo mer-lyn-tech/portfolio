@@ -25,8 +25,11 @@ app.get('/api/activity', async (req, res) => {
   try {
     const kv = await getKV();
     if (kv) {
-      const keys = await kv.keys('activity:*');
-      const results = await Promise.all(keys.map(k => kv.get(k)));
+      const dates = await kv.smembers('activity:index');
+      if (!dates || dates.length === 0) {
+        return res.json([]);
+      }
+      const results = await Promise.all(dates.map(date => kv.get(`activity:${date}`)));
       return res.json(results.filter(Boolean));
     }
     // In-memory fallback
@@ -45,6 +48,7 @@ app.post('/api/activity', async (req, res) => {
     const kv = await getKV();
     if (kv) {
       await kv.set(`activity:${date}`, record);
+      await kv.sadd('activity:index', date);
     } else {
       memStore[date] = record;
     }
@@ -62,6 +66,7 @@ app.delete('/api/activity', async (req, res) => {
     const kv = await getKV();
     if (kv) {
       await kv.del(`activity:${date}`);
+      await kv.srem('activity:index', date);
     } else {
       delete memStore[date];
     }
